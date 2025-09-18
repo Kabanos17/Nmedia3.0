@@ -141,5 +141,4 @@
         app:layout_constraintTop_toBottomOf="@+id/content"
         tools:text="@sample/posts.json/data/shareEye" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
