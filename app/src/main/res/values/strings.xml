@@ -1,6 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Nmedia!</string>
-    <string name="nmedia">Nmedia!</string>
-    <string name="Nmedia" >Nmedia!</string>
-    <string name="hello">Nmedia!</string>
+    <string name="app_name" translatable="false">НМедиа</string>
+    <string name="description_post_author_avatar">post_author_avatar</string>
+    <string name="description_post_menu">post_menu</string>
+    <string name="description_like">like</string>
+    <string name="description_share">share</string>
+    <string name="description_eye">eye</string>
 </resources>
