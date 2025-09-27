@@ -1,19 +1,21 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.activity
 
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.viewmodels.PostViewModel
+import ru.netology.nmedia.formatCount
+import ru.netology.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
     private val viewModel: PostViewModel by viewModels()
 
-    // Define a TAG for logging
     private val TAG = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,19 +48,10 @@ class MainActivity : AppCompatActivity() {
     private fun bindPost(post: Post) {
         Log.d(TAG, "bindPost: Binding post data: $post")
         with(binding) {
-            // Check if views are null (they shouldn't be with view binding if IDs are correct)
-            if (author == null) {
-                Log.e(TAG, "bindPost: binding.author is null!")
-            }
-            if (published == null) {
-                Log.e(TAG, "bindPost: binding.published is null!")
-            }
-            if (content == null) {
-                Log.e(TAG, "bindPost: binding.content is null!")
-            }
-            if (avatar == null) {
-                Log.e(TAG, "bindPost: binding.avatar is null!")
-            }
+            if (author == null) Log.e(TAG, "bindPost: binding.author is null!")
+            if (published == null) Log.e(TAG, "bindPost: binding.published is null!")
+            if (content == null) Log.e(TAG, "bindPost: binding.content is null!")
+            if (avatar == null) Log.e(TAG, "bindPost: binding.avatar is null!")
 
             author.text = post.author
             published.text = post.published
@@ -74,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                 "bindPost: Likes: ${post.likes}, Shares: ${post.shares}, Views: ${post.views}"
             )
 
-            avatar.setImageResource(R.drawable.ic_netology_48dp)
+            avatar.setImageResource(R.drawable.ic_netology_original_48dp)
 
             val likeIconRes = if (post.likedByMe) {
                 R.drawable.ic_liked_24
