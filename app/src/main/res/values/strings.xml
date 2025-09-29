@@ -5,5 +5,5 @@
     <string name="description_like">like</string>
     <string name="description_share">share</string>
     <string name="description_eye">eye</string>
-    <string name="app_name">Nmedia</string>
+    <string name="app_name" translatable="false">Nmedia</string>
 </resources>

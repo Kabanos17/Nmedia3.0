@@ -1,6 +1,11 @@
 package ru.netology.nmedia.dto
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "posts")
 data class Post(
+    @PrimaryKey
     val id: Long,
     val author: String,
     val content: String,
@@ -10,4 +15,3 @@ data class Post(
     val shares: Int = 0,
     val views: Int = 0
 )
-
