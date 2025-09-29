@@ -29,7 +29,9 @@ class PostRepositoryDbImpl(
 
     init {
         GlobalScope.launch(Dispatchers.IO) {
-            dao.insert(initialPost)
+            if (dao.getCurrentPost() == null) {
+                dao.insert(initialPost)
+            }
         }
     }
 
@@ -39,8 +41,7 @@ class PostRepositoryDbImpl(
 
     override fun like() {
         GlobalScope.launch(Dispatchers.IO) {
-            val currentPost = dao.get().value ?: initialPost
-
+            val currentPost = dao.getCurrentPost() ?: initialPost
             
             val newLikedByMe = !currentPost.likedByMe
             val newLikes = if (newLikedByMe) currentPost.likes + 1 else currentPost.likes - 1
@@ -50,7 +51,7 @@ class PostRepositoryDbImpl(
 
     override fun share() {
         GlobalScope.launch(Dispatchers.IO) {
-            val currentPost = dao.get().value ?: initialPost
+            val currentPost = dao.getCurrentPost() ?: initialPost
             val newShares = currentPost.shares + 1
             dao.updateShares(newShares)
         }
