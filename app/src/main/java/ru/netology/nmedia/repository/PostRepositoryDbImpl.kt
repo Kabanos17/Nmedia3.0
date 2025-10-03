@@ -3,12 +3,10 @@ package ru.netology.nmedia.repository
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.db.AppDatabase
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.entity.PostEntity
 
 class PostRepositoryDbImpl(
     application: Application
@@ -16,44 +14,43 @@ class PostRepositoryDbImpl(
 
     private val dao: PostDao = AppDatabase.getInstance(application).postDao()
 
-    private val initialPost = Post(
-        id = 1,
-        author = "Нетология. Университет интернет-профессий будущего",
-        content = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остаётся с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия — помочь встать на путь роста и начать цепочку перемен → http://netolo.gy/fyb",
-        published = "21 мая в 18:36",
-        likes = 999,
-        likedByMe = false,
-        shares = 999998,
-        views = 1_200_000
-    )
+    override fun getAll(): LiveData<List<Post>> = dao.getAll()
+        .map { list -> list.map(PostEntity::toDto) }
 
-    init {
-        GlobalScope.launch(Dispatchers.IO) {
-            if (dao.getCurrentPost() == null) {
-                dao.insert(initialPost)
-            }
-        }
+    override suspend fun likeById(id: Long) {
+        dao.likeById(id)
     }
 
-    override fun get(): LiveData<Post> {
-        return dao.get().map { it ?: initialPost }
+    override suspend fun shareById(id: Long) {
+        dao.shareById(id)
     }
 
-    override fun like() {
-        GlobalScope.launch(Dispatchers.IO) {
-            val currentPost = dao.getCurrentPost() ?: initialPost
-            
-            val newLikedByMe = !currentPost.likedByMe
-            val newLikes = if (newLikedByMe) currentPost.likes + 1 else currentPost.likes - 1
-            dao.updateLikeStatus(newLikedByMe, newLikes)
-        }
-    }
-
-    override fun share() {
-        GlobalScope.launch(Dispatchers.IO) {
-            val currentPost = dao.getCurrentPost() ?: initialPost
-            val newShares = currentPost.shares + 1
-            dao.updateShares(newShares)
+    override suspend fun seed() {
+        if (dao.isEmpty()) {
+            dao.insert(
+                PostEntity(
+                    id = 0,
+                    author = "Нетология. Университет интернет-профессий будущего",
+                    content = "Привет, это новая Нетология!",
+                    published = "22 мая в 18:36",
+                    likes = 1999,
+                    likedByMe = false,
+                    shares = 10999,
+                    views = 1_500_000
+                )
+            )
+            dao.insert(
+                PostEntity(
+                    id = 0,
+                    author = "Нетология. Университет интернет-профессий будущего",
+                    content = "Знаний хватит на всех: на следующей неделе разбираемся с разработкой мобильных приложений",
+                    published = "21 мая в 18:36",
+                    likes = 999,
+                    likedByMe = false,
+                    shares = 999998,
+                    views = 1_200_000
+                )
+            )
         }
     }
 }

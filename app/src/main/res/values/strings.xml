@@ -6,4 +6,5 @@
     <string name="description_share">share</string>
     <string name="description_eye">eye</string>
     <string name="app_name" translatable="false">Nmedia</string>
+    <string name="chooser_share_post">Share post</string>
 </resources>
