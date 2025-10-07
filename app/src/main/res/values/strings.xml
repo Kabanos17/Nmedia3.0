@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name" translatable="false">Nmedia</string>
+    <string name="post_text">Post Text</string>
+    <string name="add_post">Add post</string>
+    <string name="save">Save</string>
     <string name="description_post_author_avatar">post_author_avatar</string>
     <string name="description_post_menu">post_menu</string>
     <string name="description_like">like</string>
     <string name="description_share">share</string>
     <string name="description_eye">eye</string>
-    <string name="app_name" translatable="false">Nmedia</string>
     <string name="chooser_share_post">Share post</string>
+    <string name="remove">Remove</string>
+    <string name="edit">Edit</string>
+    <string name="edit_message">Edit message</string>
+    <string name="cancel_edit">Cancel edit</string>
+    <string name="new_post">New post</string>
 </resources>

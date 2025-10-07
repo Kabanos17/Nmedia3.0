@@ -14,4 +14,17 @@ data class Post(
     val likedByMe: Boolean = false,
     val shares: Int = 0,
     val views: Int = 0
-)
+) {
+    companion object {
+        val emptyPost = Post(
+            id = 0,
+            author = "",
+            content = "",
+            published = "",
+            likes = 0,
+            likedByMe = false,
+            shares = 0,
+            views = 0
+        )
+    }
+}

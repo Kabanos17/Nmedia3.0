@@ -8,4 +8,6 @@ interface PostRepository {
     suspend fun likeById(id: Long)
     suspend fun shareById(id: Long)
     suspend fun seed()
+    suspend fun save(post: Post)
+    suspend fun removeById(id: Long)
 }

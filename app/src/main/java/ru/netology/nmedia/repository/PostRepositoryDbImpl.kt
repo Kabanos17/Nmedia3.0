@@ -53,4 +53,12 @@ class PostRepositoryDbImpl(
             )
         }
     }
+
+    override suspend fun save(post: Post) {
+        dao.save(PostEntity.fromDto(post))
+    }
+
+    override suspend fun removeById(id: Long) {
+        dao.removeById(id)
+    }
 }
