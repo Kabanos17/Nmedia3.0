@@ -9,21 +9,10 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryDbImpl
 
-private val empty = Post(
-    id = 0,
-    author = "",
-    content = "",
-    published = "",
-    likes = 0,
-    likedByMe = false,
-    shares = 0,
-    views = 0
-)
-
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository = PostRepositoryDbImpl(application)
     val data = repository.getAll()
-    val edited = MutableLiveData(empty)
+    val edited = MutableLiveData<Post?>(null)
 
     init {
         viewModelScope.launch {
@@ -44,17 +33,19 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun changeContentAndSave(content: String) {
-        edited.value?.let {
-            val post = it.copy(content = content)
-            viewModelScope.launch {
-                repository.save(post)
-            }
+        val post = edited.value?.copy(content = content) ?: Post.emptyPost.copy(content = content, author = "Me", published = "now")
+        viewModelScope.launch {
+            repository.save(post)
         }
-        edited.value = empty
+        edited.value = null
     }
 
     fun edit(post: Post) {
         edited.value = post
+    }
+
+    fun startAddingPost() {
+        edited.value = Post.emptyPost
     }
 
     fun removeById(id: Long) {
@@ -64,6 +55,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun cancelEdit() {
-        edited.value = empty
+        edited.value = null
     }
 }

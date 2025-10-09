@@ -29,15 +29,28 @@ class MainActivity : AppCompatActivity(), OnInteractionListener {
         }
 
         viewModel.edited.observe(this) { post ->
-            if (post.id == 0L) {
-                return@observe
+            if (post == null) {
+                binding.footer.visibility = View.GONE
+                binding.editPanel.visibility = View.GONE
+                binding.fab.visibility = View.VISIBLE
+                binding.content.setText("")
+                binding.content.clearFocus()
+                AndroidUtils.hideKeyboard(binding.content)
+            } else if (post.id == 0L) {
+                binding.footer.visibility = View.VISIBLE
+                binding.editPanel.visibility = View.GONE
+                binding.fab.visibility = View.GONE
+                binding.content.requestFocus()
+                AndroidUtils.showKeyboard(binding.content)
+            } else {
+                binding.footer.visibility = View.VISIBLE
+                binding.editPanel.visibility = View.VISIBLE
+                binding.fab.visibility = View.GONE
+                binding.editContent.text = post.content
+                binding.content.setText(post.content)
+                binding.content.requestFocus()
+                AndroidUtils.showKeyboard(binding.content)
             }
-            binding.editGroup.visibility = View.VISIBLE
-            binding.fab.visibility = View.GONE
-            binding.editContent.text = post.content
-            binding.content.setText(post.content)
-            binding.content.requestFocus()
-            AndroidUtils.showKeyboard(binding.content)
         }
 
         binding.save.setOnClickListener {
@@ -45,27 +58,14 @@ class MainActivity : AppCompatActivity(), OnInteractionListener {
             if (text.isNotBlank()) {
                 viewModel.changeContentAndSave(text)
             }
-            binding.content.setText("")
-            binding.content.clearFocus()
-            AndroidUtils.hideKeyboard(it)
-            binding.editGroup.visibility = View.GONE
-            binding.fab.visibility = View.VISIBLE
         }
 
         binding.cancelEdit.setOnClickListener {
             viewModel.cancelEdit()
-            binding.content.setText("")
-            binding.content.clearFocus()
-            AndroidUtils.hideKeyboard(it)
-            binding.editGroup.visibility = View.GONE
-            binding.fab.visibility = View.VISIBLE
         }
 
         binding.fab.setOnClickListener {
-            binding.editGroup.visibility = View.VISIBLE
-            binding.fab.visibility = View.GONE
-            binding.content.requestFocus()
-            AndroidUtils.showKeyboard(binding.content)
+            viewModel.startAddingPost()
         }
     }
 
