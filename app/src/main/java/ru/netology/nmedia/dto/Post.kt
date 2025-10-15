@@ -1,3 +1,4 @@
+
 package ru.netology.nmedia.dto
 
 import androidx.room.Entity

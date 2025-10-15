@@ -69,16 +69,15 @@
         app:layout_constraintTop_toBottomOf="@id/header"
         tools:text="@sample/posts.json/data/content" />
 
-    <com.google.android.material.button.MaterialButton
+    <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/like"
         style="@style/Widget.App.Button.Frameless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_spacing"
+        android:button="@drawable/like_selector"
         android:checkable="true"
         android:contentDescription="@string/description_like"
-        app:icon="@drawable/ic_like_24"
-        app:iconTint="@color/like_icon_tint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/content" />
 

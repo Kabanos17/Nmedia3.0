@@ -47,7 +47,6 @@ class PostViewHolder(
             views.text = formatCount(post.views)
             avatar.setImageResource(R.drawable.ic_netology_48dp)
             like.isChecked = post.likedByMe
-            like.setIconResource(if (post.likedByMe) R.drawable.ic_liked_24 else R.drawable.ic_like_24)
 
             like.setOnClickListener {
                 onInteractionListener.onLike(post)
