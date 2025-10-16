@@ -14,7 +14,8 @@ data class Post(
     val likes: Int = 0,
     val likedByMe: Boolean = false,
     val shares: Int = 0,
-    val views: Int = 0
+    val views: Int = 0,
+    val video: String? = null
 ) {
     companion object {
         val emptyPost = Post(
@@ -25,7 +26,8 @@ data class Post(
             likes = 0,
             likedByMe = false,
             shares = 0,
-            views = 0
+            views = 0,
+            video = null
         )
     }
 }

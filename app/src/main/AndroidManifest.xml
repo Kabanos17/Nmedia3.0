@@ -21,6 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".activity.EditPostActivity" />
     </application>
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="*" />
+        </intent>
+    </queries>
 </manifest>

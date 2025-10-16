@@ -37,7 +37,8 @@ class PostRepositoryDbImpl(
                         likes = 1999,
                         likedByMe = false,
                         shares = 10999,
-                        views = 1_500_000
+                        views = 1_500_000,
+                        video = "https://rutube.ru/video/530e4b5e88ff2cd438bae9d46286b641/?r=wd"
                     ),
                     PostEntity(
                         id = 0,

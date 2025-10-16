@@ -69,6 +69,33 @@
         app:layout_constraintTop_toBottomOf="@id/header"
         tools:text="@sample/posts.json/data/content" />
 
+    <FrameLayout
+        android:id="@+id/video_preview"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="@dimen/common_spacing"
+        app:layout_constraintTop_toBottomOf="@id/content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/plug_24"/>
+
+        <ImageButton
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/play_video"
+            android:src="@drawable/ic_play_arrow_24"
+            />
+    </FrameLayout>
+
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/like"
         style="@style/Widget.App.Button.Frameless"
@@ -79,7 +106,7 @@
         android:checkable="true"
         android:contentDescription="@string/description_like"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/content" />
+        app:layout_constraintTop_toBottomOf="@id/video_preview" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/share"

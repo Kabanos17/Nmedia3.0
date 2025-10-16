@@ -44,17 +44,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = post
     }
 
-    fun startAddingPost() {
-        edited.value = Post.emptyPost
-    }
-
     fun removeById(id: Long) {
         viewModelScope.launch {
             repository.removeById(id)
         }
-    }
-
-    fun cancelEdit() {
-        edited.value = null
     }
 }

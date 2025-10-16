@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Nmedia</string>
-    <string name="post_text">Post Text</string>
+    <string name="post_text">Post text</string>
     <string name="add_post">Add post</string>
     <string name="save">Save</string>
     <string name="description_post_author_avatar">post_author_avatar</string>
@@ -15,4 +15,6 @@
     <string name="edit_message">Edit message</string>
     <string name="cancel_edit">Cancel edit</string>
     <string name="new_post">New post</string>
+    <string name="edit_post">Edit post</string>
+    <string name="play_video">Play video</string>
 </resources>
