@@ -1,12 +1,9 @@
-
 package ru.netology.nmedia.dto
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
-@Entity(tableName = "posts")
+@Serializable
 data class Post(
-    @PrimaryKey
     val id: Long,
     val author: String,
     val content: String,

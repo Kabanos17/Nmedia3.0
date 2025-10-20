@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.repository.PostRepository
-import ru.netology.nmedia.repository.PostRepositoryDbImpl
+import ru.netology.nmedia.repository.PostRepositoryJsonImpl
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: PostRepository = PostRepositoryDbImpl(application)
+    private val repository: PostRepository = PostRepositoryJsonImpl(application)
     val data = repository.getAll()
     val edited = MutableLiveData<Post?>(null)
 
