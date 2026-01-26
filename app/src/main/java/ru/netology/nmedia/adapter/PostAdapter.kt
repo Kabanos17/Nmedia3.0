@@ -1,7 +1,5 @@
 package ru.netology.nmedia.adapter
 
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,14 +18,16 @@ interface OnInteractionListener {
     fun onEdit(post: Post)
     fun onRemove(post: Post)
     fun onVideo(post: Post)
+    fun onViewPost(post: Post)
 }
 
 class PostAdapter(
     private val onInteractionListener: OnInteractionListener,
+    private val showPost: Boolean = false
 ) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, onInteractionListener)
+        return PostViewHolder(binding, onInteractionListener, showPost)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
@@ -39,9 +39,19 @@ class PostAdapter(
 class PostViewHolder(
     private val binding: CardPostBinding,
     private val onInteractionListener: OnInteractionListener,
+    private val showPost: Boolean = false
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) {
+        with(binding) {
+            if (showPost) {
+                root.setOnClickListener {
+                    onInteractionListener.onViewPost(post)
+                }
+            } else {
+                root.setOnClickListener(null)
+            }
+        }
         with(binding) {
             author.text = post.author
             published.text = post.published
@@ -56,6 +66,7 @@ class PostViewHolder(
                 videoPreview.visibility = View.GONE
             } else {
                 videoPreview.visibility = View.VISIBLE
+                playButton.visibility = View.VISIBLE
             }
 
             playButton.setOnClickListener {
@@ -83,10 +94,12 @@ class PostViewHolder(
                                 onInteractionListener.onRemove(post)
                                 true
                             }
+
                             R.id.edit -> {
                                 onInteractionListener.onEdit(post)
                                 true
                             }
+
                             else -> false
                         }
                     }

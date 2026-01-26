@@ -1,8 +1,9 @@
 package ru.netology.nmedia.dto
 
-import kotlinx.serialization.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-@Serializable
+@Parcelize
 data class Post(
     val id: Long,
     val author: String,
@@ -13,10 +14,10 @@ data class Post(
     val shares: Int = 0,
     val views: Int = 0,
     val video: String? = null
-) {
+) : Parcelable {
     companion object {
         val emptyPost = Post(
-            id = 0,
+            id = 0L,
             author = "",
             content = "",
             published = "",
@@ -27,4 +28,5 @@ data class Post(
             video = null
         )
     }
+
 }

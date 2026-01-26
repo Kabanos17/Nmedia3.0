@@ -93,7 +93,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/play_video"
             android:src="@drawable/ic_play_arrow_24"
-            />
+            android:visibility="gone" />
     </FrameLayout>
 
     <com.google.android.material.checkbox.MaterialCheckBox

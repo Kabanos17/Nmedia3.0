@@ -1,7 +1,7 @@
 [versions]
-agp = "8.13.0"
-kotlin = "2.0.21"
-ksp = "2.0.0-1.0.19" # Corrected KSP version for Kotlin 2.0.x
+agp = "9.0.0"
+kotlin = "2.2.10"
+ksp = "2.3.2" # Match KSP version with Kotlin version
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -29,3 +29,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-viewmodel = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

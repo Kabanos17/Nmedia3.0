@@ -1,21 +1,30 @@
 package ru.netology.nmedia.activity
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.fragment.PostFragment
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity(), OnInteractionListener {
 
-    private val viewModel: PostViewModel by viewModels()
-    private val adapter = PostAdapter(this)
+    override fun onViewPost(post: Post) {
+        val fragment = PostFragment.newInstance(post)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    val viewModel: PostViewModel by viewModels()
+    private val adapter = PostAdapter(this, showPost = true)
 
     private val newPostLauncher = registerForActivityResult(EditPostActivity.Contract) {
         it?.let {
@@ -33,8 +42,18 @@ class MainActivity : AppCompatActivity(), OnInteractionListener {
             adapter.submitList(posts)
         }
 
+        viewModel.loadPosts()
+
+        viewModel.postsRefreshing.observe(this) { isRefreshing ->
+            binding.swipeRefresh.isRefreshing = isRefreshing
+        }
+
         binding.fab.setOnClickListener {
             newPostLauncher.launch(null)
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.loadPosts()
         }
     }
 
@@ -56,7 +75,6 @@ class MainActivity : AppCompatActivity(), OnInteractionListener {
 
     override fun onEdit(post: Post) {
         newPostLauncher.launch(post.content)
-        viewModel.edit(post)
     }
 
     override fun onRemove(post: Post) {
@@ -64,7 +82,7 @@ class MainActivity : AppCompatActivity(), OnInteractionListener {
     }
 
     override fun onVideo(post: Post) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
+        val intent = Intent(Intent.ACTION_VIEW, post.video?.toUri())
         startActivity(intent)
     }
 }

@@ -3,6 +3,7 @@ package ru.netology.nmedia.repository
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
+import ru.netology.nmedia.api.ApiModule
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.db.AppDatabase
 import ru.netology.nmedia.dto.Post
@@ -14,11 +15,46 @@ class PostRepositoryDbImpl(
 
     private val dao: PostDao = AppDatabase.getInstance(application).postDao()
 
+    override suspend fun save(post: Post) {
+        if (post.id == 0L) {
+            dao.insert(PostEntity.fromDto(post))
+        } else {
+            val entity = dao.getById(post.id)
+            if (entity != null) {
+                dao.insert(entity.copy(content = post.content))
+            }
+        }
+    }
+
     override fun getAll(): LiveData<List<Post>> = dao.getAll()
         .map { list -> list.map(PostEntity::toDto) }
 
-    override suspend fun likeById(id: Long) {
+    override suspend fun likeById(id: Long): Post {
         dao.likeById(id)
+        try {
+            val response = ApiModule.service.likeById(id)
+            if (!response.isSuccessful) {
+                throw RuntimeException("api error")
+            }
+            return response.body() ?: throw RuntimeException("body is null")
+        } catch (e: Exception) {
+            dao.unlikeById(id)
+            throw e
+        }
+    }
+
+    override suspend fun unlikeById(id: Long): Post {
+        dao.unlikeById(id)
+        try {
+            val response = ApiModule.service.unlikeById(id)
+            if (!response.isSuccessful) {
+                throw RuntimeException("api error")
+            }
+            return response.body() ?: throw RuntimeException("body is null")
+        } catch (e: Exception) {
+            dao.likeById(id)
+            throw e
+        }
     }
 
     override suspend fun shareById(id: Long) {
@@ -73,10 +109,6 @@ class PostRepositoryDbImpl(
                 ).map { it.copy(id = 0) }
             )
         }
-    }
-
-    override suspend fun save(post: Post) {
-        dao.save(PostEntity.fromDto(post))
     }
 
     override suspend fun removeById(id: Long) {

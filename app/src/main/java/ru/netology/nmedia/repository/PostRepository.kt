@@ -5,7 +5,8 @@ import ru.netology.nmedia.dto.Post
 
 interface PostRepository {
     fun getAll(): LiveData<List<Post>>
-    suspend fun likeById(id: Long)
+    suspend fun likeById(id: Long): Post
+    suspend fun unlikeById(id: Long): Post
     suspend fun shareById(id: Long)
     suspend fun seed()
     suspend fun save(post: Post)

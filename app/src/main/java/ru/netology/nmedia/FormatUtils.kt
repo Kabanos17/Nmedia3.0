@@ -22,3 +22,13 @@ fun formatCount(count: Int): String {
         }
     }
 }
+
+fun formatCount(count: Long): String {
+    return if (count > Int.MAX_VALUE) {
+        formatCount(Int.MAX_VALUE)
+    } else {
+        formatCount(count.toInt())
+    }
+}
+
+

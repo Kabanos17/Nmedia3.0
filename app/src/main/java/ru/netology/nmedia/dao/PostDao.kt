@@ -18,27 +18,30 @@ interface PostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(posts: List<PostEntity>)
 
+    @Query("SELECT * FROM PostEntity WHERE id = :id")
+    suspend fun getById(id: Long): PostEntity?
+
     @Query("UPDATE PostEntity SET content = :content WHERE id = :id")
     suspend fun updateContentById(id: Long, content: String)
-
-    suspend fun save(post: PostEntity) {
-        if (post.id == 0L) {
-            insert(post)
-        } else {
-            updateContentById(post.id, post.content)
-        }
-    }
 
     @Query("SELECT COUNT(id) == 0 FROM PostEntity")
     suspend fun isEmpty(): Boolean
 
     @Query("""
         UPDATE PostEntity SET
-        likes = likes + CASE WHEN likedByMe THEN -1 ELSE 1 END,
-        likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
-        WHERE id = :id
+        likes = likes + 1,
+        likedByMe = 1
+        WHERE id = :id AND likedByMe = 0
         """)
     suspend fun likeById(id: Long)
+
+    @Query("""
+        UPDATE PostEntity SET
+        likes = likes - 1,
+        likedByMe = 0
+        WHERE id = :id AND likedByMe = 1
+        """)
+    suspend fun unlikeById(id: Long)
 
     @Query("UPDATE PostEntity SET shares = shares + 1 WHERE id = :id")
     suspend fun shareById(id: Long)
