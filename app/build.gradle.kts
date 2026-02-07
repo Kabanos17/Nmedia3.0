@@ -27,6 +27,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "BASE_URL", "\"https://netomedia.ru\"")
+        }
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://netomedia.ru\"")
         }
     }
     compileOptions {
@@ -39,6 +43,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 

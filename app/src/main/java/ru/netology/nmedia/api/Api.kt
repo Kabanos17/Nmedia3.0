@@ -24,7 +24,7 @@ private val retrofit = Retrofit.Builder()
     .client(okhttp)
     .build()
 
-object ApiModule {
+object PostApi {
     val service: PostApiService by lazy {
         retrofit.create(PostApiService::class.java)
     }
