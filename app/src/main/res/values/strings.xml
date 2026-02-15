@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">Nmedia</string>
-    <string name="nmedia">NMedia</string>
+    <string name="nmedia" translatable="false">NMedia</string>
     <string name="description_post_author_avatar">Post author avatar</string>
     <string name="description_post_menu">Post menu</string>
     <string name="description_post_like">Like</string>
     <string name="description_post_share">Share</string>
     <string name="description_post_views">Views</string>
-    <string name="menu_remove">Remove</string>
-    <string name="menu_edit">Edit</string>
-    <string name="menu_save">Save</string>
+    <string name="menu_remove" translatable="false">Remove</string>
+    <string name="menu_edit" translatable="false">Edit</string>
+    <string name="menu_save" translatable="false">Save</string>
     <string name="post_text">Post text</string>
     <string name="chooser_share_post">Share post</string>
     <string name="add_post">Add post</string>
@@ -25,4 +25,9 @@
     <string name="description_share">Share</string>
     <string name="description_eye">Views</string>
     <string name="edit">Edit</string>
+    <string name="post_author_avatar">avatar of the post</string>
+    <string name="more_button">More button</string>
+    <string name="like_button">Like button</string>
+    <string name="share_button">Share button</string>
+    <string name="views_button">Views button</string>
 </resources>
