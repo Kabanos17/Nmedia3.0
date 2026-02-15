@@ -1,81 +1,105 @@
 package ru.netology.nmedia.activity
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import ru.netology.nmedia.R
+import ru.netology.nmedia.adapter.OnInteractionListener
+import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.formatCount
+import ru.netology.nmedia.fragment.PostFragment
+import ru.netology.nmedia.viewmodel.FeedModelState
 import ru.netology.nmedia.viewmodel.PostViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnInteractionListener {
 
-    private lateinit var binding: ActivityMainBinding
+    override fun onViewPost(post: Post) {
+        val fragment = PostFragment.newInstance(post)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
 
-    private val viewModel: PostViewModel by viewModels()
+    val viewModel: PostViewModel by viewModels()
+    private val adapter = PostAdapter(this)
 
-    private val TAG = "MainActivity"
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        Log.d(TAG, "onCreate: View binding initialized.")
-
-        viewModel.post.observe(this) { post ->
-            Log.d(TAG, "LiveData observer: Received post data: $post")
-            if (post == null) {
-                Log.e(TAG, "LiveData observer: Post data is null!")
-                return@observe
-            }
-            bindPost(post)
-        }
-
-        binding.like.setOnClickListener {
-            Log.d(TAG, "Like button clicked")
-            viewModel.toggleLike()
-        }
-
-        binding.share.setOnClickListener {
-            Log.d(TAG, "Share button clicked")
-            viewModel.share()
+    private val newPostLauncher = registerForActivityResult(EditPostActivity.Companion.Contract) {
+        it?.let {
+            viewModel.changeContentAndSave(it)
         }
     }
 
-    private fun bindPost(post: Post) {
-        Log.d(TAG, "bindPost: Binding post data: $post")
-        with(binding) {
-            if (author == null) Log.e(TAG, "bindPost: binding.author is null!")
-            if (published == null) Log.e(TAG, "bindPost: binding.published is null!")
-            if (content == null) Log.e(TAG, "bindPost: binding.content is null!")
-            if (avatar == null) Log.e(TAG, "bindPost: binding.avatar is null!")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-            author.text = post.author
-            published.text = post.published
-            content.text = post.content
-            likeCount.text = formatCount(post.likes)
-            shareCount.text = formatCount(post.shares)
-            shareEye.text = formatCount(post.views)
-
-            Log.d(TAG, "bindPost: Author: '${post.author}', Published: '${post.published}'")
-            Log.d(TAG, "bindPost: Content: '${post.content?.take(30)}...'")
-            Log.d(
-                TAG,
-                "bindPost: Likes: ${post.likes}, Shares: ${post.shares}, Views: ${post.views}"
-            )
-
-            avatar.setImageResource(R.drawable.ic_netology_original_48dp)
-
-            val likeIconRes = if (post.likedByMe) {
-                R.drawable.ic_liked_24
-            } else {
-                R.drawable.ic_like_24
-            }
-            like.setImageResource(likeIconRes)
-            Log.d(TAG, "bindPost: Images set. Liked: ${post.likedByMe}")
+        binding.list.adapter = adapter
+        viewModel.data.observe(this) { model ->
+            adapter.submitList(model.posts)
         }
+
+        viewModel.state.observe(this) { state ->
+            when (state) {
+                is FeedModelState.Loading -> {
+                    binding.swipeRefresh.isRefreshing = true
+                    binding.errorGroup.isVisible = false
+                }
+                is FeedModelState.Success -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    binding.errorGroup.isVisible = viewModel.data.value?.empty == true
+                }
+                is FeedModelState.Error -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    binding.errorGroup.isVisible = true
+                }
+            }
+        }
+
+        binding.retryButton.setOnClickListener {
+            viewModel.loadPosts()
+        }
+
+        binding.fab.setOnClickListener {
+            newPostLauncher.launch(null)
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.loadPosts()
+        }
+    }
+
+    override fun onLike(post: Post) {
+        viewModel.likeById(post.id)
+    }
+
+    override fun onShare(post: Post) {
+        viewModel.shareById(post.id)
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, post.content)
+            type = "text/plain"
+        }
+        val shareIntent =
+            Intent.createChooser(intent, getString(R.string.chooser_share_post))
+        startActivity(shareIntent)
+    }
+
+    override fun onEdit(post: Post) {
+        newPostLauncher.launch(post.content)
+    }
+
+    override fun onRemove(post: Post) {
+        viewModel.removeById(post.id)
+    }
+
+    override fun onVideo(post: Post) {
+        val intent = Intent(Intent.ACTION_VIEW, post.video?.toUri())
+        startActivity(intent)
     }
 }

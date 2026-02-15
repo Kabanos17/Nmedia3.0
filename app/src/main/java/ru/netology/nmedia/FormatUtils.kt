@@ -1,24 +1,26 @@
 package ru.netology.nmedia
 
-fun formatCount(count: Int): String {
+import java.math.RoundingMode
+import java.text.DecimalFormat
+
+fun formatCount(count: Long): String {
     if (count < 1000) return count.toString()
 
-    val thousand = 1000
-    val million = 1_000_000
+    val df = DecimalFormat("#.0")
+    df.roundingMode = RoundingMode.DOWN
 
     return when {
         count < 10_000 -> {
-            val main = count / thousand
-            val fraction = (count % thousand) / 100
-            "${main}.${fraction}K"
+            df.format(count / 1000.0) + "K"
         }
-        count < million -> {
-            "${count / thousand}K"
+        count < 1_000_000 -> {
+            (count / 1000).toString() + "K"
+        }
+        count < 10_000_000 -> {
+            df.format(count / 1_000_000.0) + "M"
         }
         else -> {
-            val main = count / million
-            val fraction = (count % million) / 100_000
-            "${main}.${fraction}M"
+            (count / 1_000_000).toString() + "M"
         }
     }
 }

@@ -1,8 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">NMedia</string>
+    <string name="post_author_avatar">Аватар автора поста</string>
+    <string name="more_button">Кнопка Ещё</string>
+    <string name="like_button">Кнопка Нравится</string>
+    <string name="share_button">Кнопка Поделиться</string>
+    <string name="views_button">Кнопка Просмотры</string>
+    <string name="hello">Привет, мир!</string>
     <string name="description_post_author_avatar">Аватар автора поста</string>
     <string name="description_post_menu">Меню поста</string>
-    <string name="description_like">лайк</string>
-    <string name="description_share">поделиться</string>
-    <string name="description_eye">просмотры</string>
+    <string name="description_post_like">Нравится</string>
+    <string name="description_post_share">Поделиться</string>
+    <string name="description_post_views">Просмотры</string>
+    <string name="remove">Удалить</string>
+    <string name="edit_post">Редактировать пост</string>
+    <string name="post_text">Текст поста</string>
+    <string name="save">Сохранить</string>
+    <string name="chooser_share_post">Поделиться</string>
+    <string name="add_post">Добавить пост</string>
+    <string name="play_video">Воспроизвести видео</string>
+    <string name="new_posts">Новые посты</string>
+    <string name="error_loading">Ошибка загрузки</string>
+    <string name="retry_loading">Повторить</string>
+    <string name="empty_posts">Постов нет</string>
+    <string name="description_like">Нравится</string>
+    <string name="description_share">Поделиться</string>
+    <string name="description_eye">Просмотры</string>
+    <string name="edit">Редактировать</string>
 </resources>

@@ -1,59 +1,40 @@
 package ru.netology.nmedia.repository
 
-import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import ru.netology.nmedia.dao.PostDao
-import ru.netology.nmedia.db.AppDatabase
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.entity.PostEntity
 
 class PostRepositoryDbImpl(
-    application: Application
+    private val dao: PostDao
 ) : PostRepository {
 
-    private val dao: PostDao = AppDatabase.getInstance(application).postDao()
-
-    private val initialPost = Post(
-        id = 1,
-        author = "Нетология. Университет интернет-профессий будущего",
-        content = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остаётся с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия — помочь встать на путь роста и начать цепочку перемен → http://netolo.gy/fyb",
-        published = "21 мая в 18:36",
-        likes = 999,
-        likedByMe = false,
-        shares = 999998,
-        views = 1_200_000
-    )
-
-    init {
-        GlobalScope.launch(Dispatchers.IO) {
-            if (dao.getCurrentPost() == null) {
-                dao.insert(initialPost)
-            }
-        }
+    override suspend fun save(post: Post) {
+        dao.insert(PostEntity.fromDto(post))
     }
 
-    override fun get(): LiveData<Post> {
-        return dao.get().map { it ?: initialPost }
+    override suspend fun getAll(): List<Post> {
+        return dao.getAllPosts().map { it.toDto() }
     }
 
-    override fun like() {
-        GlobalScope.launch(Dispatchers.IO) {
-            val currentPost = dao.getCurrentPost() ?: initialPost
-            
-            val newLikedByMe = !currentPost.likedByMe
-            val newLikes = if (newLikedByMe) currentPost.likes + 1 else currentPost.likes - 1
-            dao.updateLikeStatus(newLikedByMe, newLikes)
-        }
+    override suspend fun likeById(id: Long): Post {
+        dao.likeById(id)
+        return dao.getById(id)!!.toDto()
     }
 
-    override fun share() {
-        GlobalScope.launch(Dispatchers.IO) {
-            val currentPost = dao.getCurrentPost() ?: initialPost
-            val newShares = currentPost.shares + 1
-            dao.updateShares(newShares)
-        }
+    override suspend fun unlikeById(id: Long): Post {
+        dao.unlikeById(id)
+        return dao.getById(id)!!.toDto()
+    }
+
+    override suspend fun shareById(id: Long) {
+        dao.shareById(id)
+    }
+
+    override suspend fun seed() {
+        // This repository shouldn't be responsible for seeding
+    }
+
+    override suspend fun removeById(id: Long) {
+        dao.removeById(id)
     }
 }
