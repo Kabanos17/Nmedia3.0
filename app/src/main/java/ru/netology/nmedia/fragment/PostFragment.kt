@@ -12,6 +12,7 @@ import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.util.AndroidUtils
 import android.widget.PopupMenu
+import androidx.fragment.app.activityViewModels
 import ru.netology.nmedia.viewmodel.PostViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -22,18 +23,14 @@ import ru.netology.nmedia.formatCount
 
 class PostFragment : Fragment() {
 
-    private lateinit var viewModel: PostViewModel
-
-    private var _binding: CardPostBinding? = null
-    private val binding get() = _binding!!
+    private val viewModel: PostViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        viewModel = (requireActivity() as MainActivity).viewModel
-        _binding = CardPostBinding.inflate(inflater, container, false)
+    ): View {
+        val binding = CardPostBinding.inflate(inflater, container, false)
         val post = arguments?.getParcelable<Post>(ARG_POST)
         if (post == null) return binding.root
 
@@ -41,9 +38,9 @@ class PostFragment : Fragment() {
             author.text = post.author
             published.text = post.published
             content.text = post.content
-            like.text = formatCount(post.likes)
-            share.text = formatCount(post.shares)
-            views.text = formatCount(post.views)
+            like.text = formatCount(post.likes.toLong())
+            share.text = formatCount(post.shares.toLong())
+            views.text = formatCount(post.views.toLong())
             avatar.setImageResource(R.drawable.ic_netology_48dp)
             like.isChecked = post.likedByMe
 
@@ -84,7 +81,7 @@ class PostFragment : Fragment() {
                             }
                             R.id.edit -> {
                                 val intent = Intent(view.context, EditPostActivity::class.java)
-                                intent.putExtra(EditPostActivity.Contract.EXTRA_TEXT, post.content)
+                                intent.putExtra(EditPostActivity.Companion.Contract.EXTRA_TEXT, post.content)
                                 startActivity(intent)
                                 true
                             }
@@ -93,18 +90,9 @@ class PostFragment : Fragment() {
                     }
                 }.show()
             }
-
-            // These buttons don't exist in the current layout
-            // Edit and Delete functionality should be implemented through the menu
-            // For now, we'll handle edit and delete through the existing menu options
         }
 
         return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

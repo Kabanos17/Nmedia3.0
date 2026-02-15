@@ -5,12 +5,14 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.fragment.PostFragment
+import ru.netology.nmedia.viewmodel.FeedModelState
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity(), OnInteractionListener {
@@ -24,9 +26,9 @@ class MainActivity : AppCompatActivity(), OnInteractionListener {
     }
 
     val viewModel: PostViewModel by viewModels()
-    private val adapter = PostAdapter(this, showPost = true)
+    private val adapter = PostAdapter(this)
 
-    private val newPostLauncher = registerForActivityResult(EditPostActivity.Contract) {
+    private val newPostLauncher = registerForActivityResult(EditPostActivity.Companion.Contract) {
         it?.let {
             viewModel.changeContentAndSave(it)
         }
@@ -38,14 +40,29 @@ class MainActivity : AppCompatActivity(), OnInteractionListener {
         setContentView(binding.root)
 
         binding.list.adapter = adapter
-        viewModel.data.observe(this) { posts ->
-            adapter.submitList(posts)
+        viewModel.data.observe(this) { model ->
+            adapter.submitList(model.posts)
         }
 
-        viewModel.loadPosts()
+        viewModel.state.observe(this) { state ->
+            when (state) {
+                is FeedModelState.Loading -> {
+                    binding.swipeRefresh.isRefreshing = true
+                    binding.errorGroup.isVisible = false
+                }
+                is FeedModelState.Success -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    binding.errorGroup.isVisible = viewModel.data.value?.empty == true
+                }
+                is FeedModelState.Error -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    binding.errorGroup.isVisible = true
+                }
+            }
+        }
 
-        viewModel.postsRefreshing.observe(this) { isRefreshing ->
-            binding.swipeRefresh.isRefreshing = isRefreshing
+        binding.retryButton.setOnClickListener {
+            viewModel.loadPosts()
         }
 
         binding.fab.setOnClickListener {

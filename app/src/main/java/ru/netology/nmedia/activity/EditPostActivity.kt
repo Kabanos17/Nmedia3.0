@@ -28,31 +28,32 @@ class EditPostActivity : AppCompatActivity() {
         binding.content.requestFocus()
 
         binding.save.setOnClickListener {
-            val result = Intent()
             if (binding.content.text.isNullOrBlank()) {
-                setResult(Activity.RESULT_CANCELED, result)
+                setResult(Activity.RESULT_CANCELED)
             } else {
-                result.putExtra(Contract.EXTRA_TEXT, binding.content.text.toString())
+                val result = Intent().putExtra(Contract.EXTRA_TEXT, binding.content.text.toString())
                 setResult(Activity.RESULT_OK, result)
             }
             finish()
         }
     }
 
-    object Contract : ActivityResultContract<String?, String?>() {
-        const val EXTRA_TEXT = "EXTRA_TEXT"
+    companion object {
+        object Contract : ActivityResultContract<String?, String?>() {
+            const val EXTRA_TEXT = "EXTRA_TEXT"
 
-        override fun createIntent(context: Context, input: String?): Intent {
-            val intent = Intent(context, EditPostActivity::class.java)
-            intent.putExtra(EXTRA_TEXT, input)
-            return intent
-        }
+            override fun createIntent(context: Context, input: String?): Intent {
+                val intent = Intent(context, EditPostActivity::class.java)
+                intent.putExtra(EXTRA_TEXT, input)
+                return intent
+            }
 
-        override fun parseResult(resultCode: Int, intent: Intent?): String? {
-            return if (resultCode == Activity.RESULT_OK) {
-                intent?.getStringExtra(EXTRA_TEXT)
-            } else {
-                null
+            override fun parseResult(resultCode: Int, intent: Intent?): String? {
+                return if (resultCode == Activity.RESULT_OK) {
+                    intent?.getStringExtra(EXTRA_TEXT)
+                } else {
+                    null
+                }
             }
         }
     }
